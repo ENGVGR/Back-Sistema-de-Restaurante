@@ -1,8 +1,9 @@
 // @flow
 
 /** Classe Cliente */
-// eslint-disable-next-line no-unused-vars
-class Costumer {
+export default class Costumer {
+  id: number;
+
   name: string;
 
   table: number;
@@ -15,7 +16,13 @@ class Costumer {
    * @param {number} newTable - Número da mesa do cliente.
    * @param {string} newStatus - Status atual do cliente. podendo ser: Aguardando atendimento, Pedido em andamento, Pedido entregue ou finalizado
    */
-  constructor(newName: string, newTable: number, newStatus: string) {
+  constructor(
+    newId: number,
+    newName: string,
+    newTable: number,
+    newStatus: string
+  ) {
+    this.id = newId;
     this.name = newName;
     this.table = newTable;
     this.status = newStatus;

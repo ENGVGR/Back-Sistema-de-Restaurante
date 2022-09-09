@@ -1,7 +1,12 @@
-const app = require("../app");
+const express = require("express");
+const costumerRoute = require("../routes/costumer");
 
-const port = process.env.PORT || 3000;
+const app = express();
 
-app.listen(port, () => {
-  console.log(`Server listening on ${port}`);
+app.use(express.json());
+
+app.use("/costumer", costumerRoute);
+
+const listener = app.listen(process.env.PORT || 3000, () => {
+  console.log(`App is listening on port ${listener.address().port}`);
 });
