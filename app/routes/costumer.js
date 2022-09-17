@@ -7,6 +7,8 @@ const costumerController = require("../controllers/costumer/costumer.controller"
 router.post("/create", costumerController.createCostumer);
 router.get("/get", costumerController.getAllCostumers);
 router.get("/get/:id", costumerController.getCostumer);
+router.get("/getPayments", costumerController.getAllPayments);
+router.get("/getOrders", costumerController.getAllCostumersOrders);
 router.patch("/update/:id", costumerController.updateCostumer);
 router.delete("/delete/:id", costumerController.deleteCostumer);
 

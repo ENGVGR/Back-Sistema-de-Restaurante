@@ -1,65 +1,72 @@
 // eslint-disable-next-line import/no-import-module-exports
-import Costumer from "../../classes/costumer/costumer";
-
-let costumersDB = [];
-let newId = 1;
+import execSQLQuery from "../../sqlQuerry";
 
 const createCostumer = (req, res) => {
-  const costumer = new Costumer({
-    id: newId,
-    name: req.body.name,
-    table: req.body.table,
-    status: req.body.status,
-  });
-  costumersDB.push(costumer.id);
-  newId += 1;
-  res.send("Cliente Criado!");
+  const { table } = req.body;
+  execSQLQuery(`insert into customers(customers.table) values(${table});`, res);
 };
 
 const getAllCostumers = (req, res) => {
-  res.send(costumersDB);
+  execSQLQuery("SELECT * FROM customers", res);
 };
 
 const getCostumer = (req, res) => {
   const { id } = req.params;
-  const result = costumersDB.filter(
-    (costumer) => costumer.id.toString() === id
+  let filter = "";
+  if (id) filter = ` WHERE customers.id=${id}`;
+  execSQLQuery(`SELECT * FROM customers${filter}`, res);
+};
+
+const getAllPayments = (req, res) => {
+  execSQLQuery(
+    `SELECT hamburgueria.customers.table as mesa, sum(hamburgueria.items.price) as total_a_pagar
+  FROM hamburgueria.orders
+  INNER JOIN hamburgueria.customers
+  ON hamburgueria.orders.customers_id = hamburgueria.customers.id
+  inner join hamburgueria.orders_has_items
+  on hamburgueria.orders.id = hamburgueria.orders_has_items.orders_id
+  inner join hamburgueria.items
+  on hamburgueria.items.id = hamburgueria.orders_has_items.items_id
+  group by mesa;`,
+    res
   );
-  res.send(result);
+};
+
+const getAllCostumersOrders = (req, res) => {
+  execSQLQuery(
+    `SELECT hamburgueria.customers.id as pessoa, hamburgueria.customers.table as mesa, hamburgueria.items.title as pedido, hamburgueria.orders.id as order_id
+  FROM hamburgueria.orders
+  INNER JOIN hamburgueria.customers
+  ON hamburgueria.orders.customers_id = hamburgueria.customers.id
+  inner join hamburgueria.orders_has_items
+  on hamburgueria.orders.id = hamburgueria.orders_has_items.orders_id
+  inner join hamburgueria.items
+  on hamburgueria.items.id = hamburgueria.orders_has_items.items_id
+  order by mesa;`,
+    res
+  );
 };
 
 const updateCostumer = (req, res) => {
   const { id } = req.params;
-  const { name, table, status } = req.body;
-
-  const costumer = costumersDB.filter((ctmer) => ctmer.id.toString() === id);
-  costumersDB = costumersDB.filter((ctmer) => ctmer.id.toString() !== id);
-
-  if (name) {
-    costumer[0].name = name;
-  }
-  if (table) {
-    costumer[0].table = table;
-  }
-  if (status) {
-    costumer[0].status = status;
-  }
-
-  costumersDB.push(costumer[0]);
-  res.send("Alterações feitas!");
+  const { table } = req.body;
+  execSQLQuery(
+    `UPDATE customers SET customers.table = ${table} WHERE customers.ID=${id}`,
+    res
+  );
 };
 
 const deleteCostumer = (req, res) => {
   const { id } = req.params;
-  costumersDB = costumersDB.filter((ctmer) => ctmer.id.toString() !== id);
-
-  res.send("Cliente excluido!");
+  execSQLQuery(`DELETE FROM customers WHERE id=${id}`, res);
 };
 
 module.exports = {
   createCostumer,
   getAllCostumers,
   getCostumer,
+  getAllPayments,
+  getAllCostumersOrders,
   updateCostumer,
   deleteCostumer,
 };
