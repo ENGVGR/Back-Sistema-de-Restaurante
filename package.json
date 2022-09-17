@@ -8,6 +8,7 @@
     "@babel/preset-env": "^7.18.10",
     "babel-eslint": "^10.1.0",
     "body-parser": "^1.20.0",
+    "docdash": "^1.2.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "express": "^4.18.1",
@@ -16,10 +17,11 @@
     "prettier": "^2.7.1"
   },
   "scripts": {
-    "start": "node lib/server/index.js",
+    "start": "babel app/ -d lib/ && node lib/server/index.js",
     "test": "jest",
     "coverage": "jest --coverage",
-    "build:node": "babel app/ -d lib/"
+    "build:node": "babel app/ -d lib/",
+    "jsdoc": "babel app/ -d lib/ && jsdoc -a all -c jsdoc.json -r -R README.md lib/classes/costumer/costumer.js -d docs/jsdoc"
   },
   "devDependencies": {
     "@babel/cli": "^7.18.10",

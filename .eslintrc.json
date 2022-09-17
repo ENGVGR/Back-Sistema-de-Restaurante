@@ -12,5 +12,6 @@
   "parserOptions": {
     "ecmaVersion": "latest"
   },
+  "ignorePatterns": ["lib/*"],
   "rules": {}
 }
